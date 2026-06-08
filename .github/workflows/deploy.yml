@@ -1,0 +1,27 @@
+name: CI-CD Upload JSON to Storage
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'data.json' # Only trigger when data.json is updated
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Download the repository code onto the GitHub runner machine
+    - name: Checkout repository code
+      uses: actions/checkout@v4
+
+    # Step 2: Use curl (a command-line tool) to send a POST request to your Supabase server
+    - name: Deploy JSON to Supabase Storage
+      run: |
+        curl -X POST "${{ secrets.SUPABASE_URL }}/storage/v1/object/app-data/data.json" \
+          -H "Authorization: Bearer ${{ secrets.SUPABASE_KEY }}" \
+          -H "apikey: ${{ secrets.SUPABASE_KEY }}" \
+          -H "Content-Type: application/json" \
+          -H "x-upsert: true" \
+          --data-binary @data.json
