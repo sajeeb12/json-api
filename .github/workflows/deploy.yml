@@ -21,8 +21,8 @@ jobs:
     - name: Deploy JSON to Supabase Storage
       run: |
         # 1. Create an array of files we want to upload
-        # This finds data.json and any file inside the configs directory
-        FILES=$(find data.json configs -type f 2>/dev/null || find data.json -type f)
+        # This finds data.json and any file inside the config directory
+        FILES=$(find data.json config -type f 2>/dev/null || find data.json -type f)
         for FILE in $FILES 
         do
           echo -e "\started uploading $FILE\n"
