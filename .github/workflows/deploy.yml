@@ -6,7 +6,7 @@ on:
       - main
     paths:
       # - 'data.json' # Only trigger when data.json is updated
-      - 'configs/**'
+      - 'config/**'
 
 jobs:
   deploy:
