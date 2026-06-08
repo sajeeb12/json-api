@@ -5,7 +5,8 @@ on:
     branches:
       - main
     paths:
-      - 'data.json' # Only trigger when data.json is updated
+      # - 'data.json' # Only trigger when data.json is updated
+      - 'configs/**'
 
 jobs:
   deploy:
@@ -19,9 +20,15 @@ jobs:
     # Step 2: Use curl (a command-line tool) to send a POST request to your Supabase server
     - name: Deploy JSON to Supabase Storage
       run: |
-        curl -X POST "${{ secrets.SUPABASE_URL }}/storage/v1/object/app-data/data.json" \
-          -H "Authorization: Bearer ${{ secrets.SUPABASE_KEY }}" \
-          -H "apikey: ${{ secrets.SUPABASE_KEY }}" \
-          -H "Content-Type: application/json" \
-          -H "x-upsert: true" \
-          --data-binary @data.json
+        # 1. Create an array of files we want to upload
+        # This finds data.json and any file inside the configs directory
+        FILES=$(find data.json configs -type f 2>/dev/null || find data.json -type f)
+        for FILE in $FILES: do
+          curl -X POST "${{ secrets.SUPABASE_URL }}/storage/v1/object/app-data/$FILE" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_KEY }}" \
+            -H "apikey: ${{ secrets.SUPABASE_KEY }}" \
+            -H "Content-Type: application/json" \
+            -H "x-upsert: true" \
+            --data-binary "@$FILE"
+          echo -e "\nFinished uploading $FILE\n"
+        done
