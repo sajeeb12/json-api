@@ -23,7 +23,9 @@ jobs:
         # 1. Create an array of files we want to upload
         # This finds data.json and any file inside the configs directory
         FILES=$(find data.json configs -type f 2>/dev/null || find data.json -type f)
-        for FILE in $FILES; do
+        for FILE in $FILES 
+        do
+          echo -e "\started uploading $FILE\n"
           curl -X POST "${{ secrets.SUPABASE_URL }}/storage/v1/object/app-data/$FILE" \
             -H "Authorization: Bearer ${{ secrets.SUPABASE_KEY }}" \
             -H "apikey: ${{ secrets.SUPABASE_KEY }}" \
